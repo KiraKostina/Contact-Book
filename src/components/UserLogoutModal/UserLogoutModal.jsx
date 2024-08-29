@@ -13,25 +13,29 @@ export default function UserLogOutModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className={css.logout_modal_container}>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        shouldCloseOnEsc={true}
-        contentLabel="LogOut Modal"
-      >
-        <h3>Log out</h3>
-        <p> Do you really want to leave?</p>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      shouldCloseOnEsc={true}
+      contentLabel="LogOut Modal"
+    >
+      <div className={css.logout_modal_main_container}>
+        {/* <div className={css.logout_modal_wrapper}> */}
+        <h2 className={css.log_out_title}>Log out</h2>
+        {/* </div> */}
+        <h3 className={css.logout_confirm}> Do you really want to leave?</h3>
+
         <div className={css.button_container}>
-          <button className={css.yes_btn} onClick={handleLogOut}>
+          <button className={css.logout_btn} onClick={handleLogOut}>
             Log out
           </button>
 
-          <button className={css.no_btn} onClick={onClose}>
+          <button className={css.cancel_btn} onClick={onClose}>
             Cancel
           </button>
         </div>
-      </Modal>
-    </div>
+      </div>
+    </Modal>
+    // </div>
   );
 }
