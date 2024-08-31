@@ -1,5 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { register, logIn, logOut, refreshUser, updateUser } from './operations';
+import {
+  register,
+  logIn,
+  logOut,
+  refreshUser,
+  updateUser,
+  uploadUserPhoto,
+} from './operations';
 
 const handlePending = state => {
   state.isLoading = true;
@@ -53,7 +60,20 @@ const authSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.user = action.payload;
       })
-      .addCase(updateUser.rejected, handleRejected);
+      .addCase(updateUser.rejected, handleRejected)
+      .addCase(uploadUserPhoto.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadUserPhoto.fulfilled, (state, action) => {
+        state.loading = false;
+        // Если в ответе есть URL новой фотографии, обновляем его
+        state.user.photo = action.payload.photo;
+      })
+      .addCase(uploadUserPhoto.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

@@ -5,7 +5,7 @@ import { HiArrowUpTray } from 'react-icons/hi2';
 import { HiOutlineUserCircle } from 'react-icons/hi';
 import { HiOutlineEye } from 'react-icons/hi2';
 import { HiOutlineEyeOff } from 'react-icons/hi';
-import { updateUser } from '../../redux/auth/operations';
+import { updateUser, uploadUserPhoto } from '../../redux/auth/operations';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 
@@ -57,246 +57,273 @@ export default function UserSettingsForm({ user, onClose }) {
     const formData = new FormData();
     formData.append('photo', file);
 
-    // все fetch запросы перенести в редакс операции
-    try {
-      const response = await fetch('http://localhost:3000/user/avatar', {
-        method: 'POST',
-        body: formData,
-      });
-
-      // алерты переделать на тостеры
-
-      if (response.ok) {
-        alert('Photo uploaded successfully!');
-      } else {
-        alert('Failed to upload photo.');
-      }
-    } catch (error) {
-      console.error('Error uploading photo:', error);
-      alert('Error uploading photo.');
-    }
-  };
-
-  const handleUpdate = async (values, { setSubmitting }) => {
-    // console.log('Form values:', values);
-    const { gender, name, email, outdatedPassword, newPassword } = values;
-
-    dispatch(
-      updateUser({
-        photo: selectedFile,
-        gender,
-        name,
-        email,
-        outdatedPassword,
-        newPassword,
-      })
-    )
+    dispatch(uploadUserPhoto(formData))
       .unwrap()
       .then(() => {
-        toast.success('Profile updated successfully!');
-        onClose();
+        toast.success('Photo uploaded successfully!');
       })
       .catch(() => {
-        toast.error('Error updating profile.');
-      })
-      .finally(() => {
-        setSubmitting(false);
+        toast.error('Error uploading photo.');
       });
-  };
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleUpdate}
-    >
-      {({ isSubmitting }) => (
-        <Form>
-          <h3>Your photo</h3>
-          <div>
-            {photoPreview ? (
-              <img
-                // className={css.photoUrl}
-                style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                src={photoPreview}
-                alt="User Photo"
-              />
-            ) : (
-              <HiOutlineUserCircle
-                style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-              />
+    const handleUpdate = async (values, { setSubmitting }) => {
+      // console.log('Form values:', values);
+      const { gender, name, email, outdatedPassword, newPassword } = values;
 
-              //   <img
-              //     // className={css.photoUrl}
-              //     src={<HiOutlineUserCircle />}
-              //     alt="Default Preview"
-              //   />
-            )}
-            {/* <img
+      dispatch(
+        updateUser({
+          photo: selectedFile,
+          gender,
+          name,
+          email,
+          outdatedPassword,
+          newPassword,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          toast.success('Profile updated successfully!');
+          onClose();
+        })
+        .catch(() => {
+          toast.error('Error updating profile.');
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
+    };
+
+    return (
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleUpdate}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <h3>Your photo</h3>
+            <div>
+              {photoPreview ? (
+                <img
+                  // className={css.photoUrl}
+                  style={{
+                    width: '100px',
+                    height: '100px',
+                    objectFit: 'cover',
+                  }}
+                  src={photoPreview}
+                  alt="User Photo"
+                />
+              ) : (
+                <HiOutlineUserCircle
+                  style={{
+                    width: '100px',
+                    height: '100px',
+                    objectFit: 'cover',
+                  }}
+                />
+
+                //   <img
+                //     // className={css.photoUrl}
+                //     src={<HiOutlineUserCircle />}
+                //     alt="Default Preview"
+                //   />
+              )}
+              {/* <img
               src={user?.photo || 'placeholder.jpg'}
               alt="User Photo"
               style={{ width: '100px', height: '100px', objectFit: 'cover' }}
             /> */}
-            <input
-              type="file"
-              id="fileInput"
-              style={{ display: 'none' }}
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-            <button type="button" onClick={handleButtonClick}>
-              <HiArrowUpTray />
-              Upload a photo
-            </button>
-          </div>
+              <input
+                type="file"
+                id="fileInput"
+                style={{ display: 'none' }}
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              <button type="button" onClick={handleButtonClick}>
+                <HiArrowUpTray />
+                Upload a photo
+              </button>
+            </div>
 
-          <h3>Your gender identity</h3>
-          <div role="group" aria-labelledby="gender">
-            <label>
-              <Field type="radio" name="gender" value="woman" />
-              Woman
-            </label>
-            <label>
-              <Field type="radio" name="gender" value="man" />
-              Man
-            </label>
-          </div>
+            <h3>Your gender identity</h3>
+            <div role="group" aria-labelledby="gender">
+              <label>
+                <Field type="radio" name="gender" value="woman" />
+                Woman
+              </label>
+              <label>
+                <Field type="radio" name="gender" value="man" />
+                Man
+              </label>
+            </div>
 
-          <h3>Your name</h3>
-          <div>
-            <Field type="text" name="name" placeholder="Enter your name" />
-            <ErrorMessage name="name" component="div" className="error" />
-          </div>
+            <h3>Your name</h3>
+            <div>
+              <Field type="text" name="name" placeholder="Enter your name" />
+              <ErrorMessage name="name" component="div" className="error" />
+            </div>
 
-          <h3>E-mail</h3>
-          <div>
-            <Field type="email" name="email" placeholder="Enter your email" />
-            <ErrorMessage name="email" component="div" className="error" />
-          </div>
+            <h3>E-mail</h3>
+            <div>
+              <Field type="email" name="email" placeholder="Enter your email" />
+              <ErrorMessage name="email" component="div" className="error" />
+            </div>
 
-          <h3>Password</h3>
-          <div>
-            <label>
-              Outdated password:
-              <Field
-                type={showOutdatedpassword ? 'text' : 'password'}
+            <h3>Password</h3>
+            <div>
+              <label>
+                Outdated password:
+                <Field
+                  type={showOutdatedpassword ? 'text' : 'password'}
+                  name="outdatedPassword"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowOutdatedpassword(!showOutdatedpassword)}
+                >
+                  {showOutdatedpassword ? (
+                    <HiOutlineEye />
+                  ) : (
+                    <HiOutlineEyeOff />
+                  )}
+                </button>
+              </label>
+              <ErrorMessage
                 name="outdatedPassword"
-                placeholder="Password"
+                component="div"
+                className="error"
               />
-              <button
-                type="button"
-                onClick={() => setShowOutdatedpassword(!showOutdatedpassword)}
-              >
-                {showOutdatedpassword ? <HiOutlineEye /> : <HiOutlineEyeOff />}
-              </button>
-            </label>
-            <ErrorMessage
-              name="outdatedPassword"
-              component="div"
-              className="error"
-            />
-          </div>
+            </div>
 
-          <div>
-            <label>
-              New Password:
-              <Field
-                type={showNewPassword ? 'text' : 'password'}
+            <div>
+              <label>
+                New Password:
+                <Field
+                  type={showNewPassword ? 'text' : 'password'}
+                  name="newPassword"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                >
+                  {showNewPassword ? <HiOutlineEye /> : <HiOutlineEyeOff />}
+                </button>
+              </label>
+              <ErrorMessage
                 name="newPassword"
-                placeholder="Password"
+                component="div"
+                className="error"
               />
-              <button
-                type="button"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-              >
-                {showNewPassword ? <HiOutlineEye /> : <HiOutlineEyeOff />}
-              </button>
-            </label>
-            <ErrorMessage
-              name="newPassword"
-              component="div"
-              className="error"
-            />
-          </div>
+            </div>
 
-          <div>
-            <label>
-              Repeat New Password:
-              <Field
-                type={showRepeatNewPassword ? 'text' : 'password'}
+            <div>
+              <label>
+                Repeat New Password:
+                <Field
+                  type={showRepeatNewPassword ? 'text' : 'password'}
+                  name="repeatNewPassword"
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowRepeatNewPassword(!showRepeatNewPassword)
+                  }
+                >
+                  {showRepeatNewPassword ? (
+                    <HiOutlineEye />
+                  ) : (
+                    <HiOutlineEyeOff />
+                  )}
+                </button>
+              </label>
+              <ErrorMessage
                 name="repeatNewPassword"
-                placeholder="Password"
+                component="div"
+                className="error"
               />
-              <button
-                type="button"
-                onClick={() => setShowRepeatNewPassword(!showRepeatNewPassword)}
-              >
-                {showRepeatNewPassword ? <HiOutlineEye /> : <HiOutlineEyeOff />}
-              </button>
-            </label>
-            <ErrorMessage
-              name="repeatNewPassword"
-              component="div"
-              className="error"
-            />
-          </div>
+            </div>
 
-          <button type="submit" disabled={isSubmitting}>
-            Save
-          </button>
-        </Form>
-      )}
-    </Formik>
-  );
-}
+            <button type="submit" disabled={isSubmitting}>
+              Save
+            </button>
+          </Form>
+        )}
+      </Formik>
+    );
+  };
 
-// try {
-//   const response = await fetch('http://localhost:3000/update-user', {
-//     method: 'PATCH',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(values),
-//   });
+  // try {
+  //   const response = await fetch('http://localhost:3000/update-user', {
+  //     method: 'PATCH',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(values),
+  //   });
 
-//   if (response.ok) {
-//     alert('Profile updated successfully!');
-//     onClose(); // Закрываем модалку после успешного обновления
-//   } else {
-//     const errorData = await response.json();
-//     alert(`Error: ${errorData.message}`);
-//   }
-// } catch (error) {
-//   console.error('Error updating profile:', error);
-//   alert('Error updating profile.');
-// } finally {
-//   setSubmitting(false);
-// }
+  //   if (response.ok) {
+  //     alert('Profile updated successfully!');
+  //     onClose(); // Закрываем модалку после успешного обновления
+  //   } else {
+  //     const errorData = await response.json();
+  //     alert(`Error: ${errorData.message}`);
+  //   }
+  // } catch (error) {
+  //   console.error('Error updating profile:', error);
+  //   alert('Error updating profile.');
+  // } finally {
+  //   setSubmitting(false);
+  // }
 
-// {
-/* <label>
+  // {
+  /* <label>
               <Field type="radio" name="gender" value="other" />
               Other
             </label> */
-// }
+  // }
 
-// .test(
-//   'at-least-one-field',
-//   'At least one field must be filled out',
-//   function (value = {}) {
-//     const {
-//       name,
-//       email,
-//       outdatedPassword,
-//       newPassword,
-//       repeatNewPassword,
-//     } = value;
-//     return (
-//       !!name ||
-//       !!email ||
-//       !!outdatedPassword ||
-//       !!newPassword ||
-//       !!repeatNewPassword
-//     );
-//   }
-// ),
+  // .test(
+  //   'at-least-one-field',
+  //   'At least one field must be filled out',
+  //   function (value = {}) {
+  //     const {
+  //       name,
+  //       email,
+  //       outdatedPassword,
+  //       newPassword,
+  //       repeatNewPassword,
+  //     } = value;
+  //     return (
+  //       !!name ||
+  //       !!email ||
+  //       !!outdatedPassword ||
+  //       !!newPassword ||
+  //       !!repeatNewPassword
+  //     );
+  //   }
+  // ),
+
+  // все fetch запросы перенести в редакс операции
+  // try {
+  //   const response = await fetch('http://localhost:3000/user/avatar', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
+
+  // алерты переделать на тостеры
+
+  //     if (response.ok) {
+  //       alert('Photo uploaded successfully!');
+  //     } else {
+  //       alert('Failed to upload photo.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error uploading photo:', error);
+  //     alert('Error uploading photo.');
+  //   }
+}

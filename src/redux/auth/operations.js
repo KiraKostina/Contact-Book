@@ -93,19 +93,46 @@ export const refreshUser = createAsyncThunk(
 // кусок для проекта обновление данных юзера
 //PATCH @ /users/:userId
 export const updateUser = createAsyncThunk(
-  'users/updateUser',
+  'user/updateUser',
   async ({ id, photo, gender, name, email, password }, thunkAPI) => {
     try {
-      const response = await axios.patch(`/user/${id}`, {
-        photo,
-        gender,
-        name,
-        email,
-        password,
-      });
+      const response = await axios.patch(
+        `/user/${id}`,
+        {
+          photo,
+          gender,
+          name,
+          email,
+          password,
+        },
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const uploadUserPhoto = createAsyncThunk(
+  'user/uploadPhoto',
+  async (formData, thunkAPI) => {
+    try {
+      const response = await axios.post('/user/avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      toast.success('Photo uploaded successfully!');
+      return response.data;
+    } catch (error) {
+      toast.error('Error uploading photo.');
+      return thunkAPI.rejectWithValue(error.response.data || error.message);
     }
   }
 );
