@@ -5,6 +5,9 @@ import { HiArrowUpTray } from 'react-icons/hi2';
 import { HiOutlineUserCircle } from 'react-icons/hi';
 import { HiOutlineEye } from 'react-icons/hi2';
 import { HiOutlineEyeOff } from 'react-icons/hi';
+import { updateUser } from '../../redux/auth/operations';
+import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
@@ -18,17 +21,18 @@ const validationSchema = Yup.object({
     .required('Please confirm your new password'),
 });
 
-export default function UserSettingsForm({ userData, onClose }) {
+export default function UserSettingsForm({ user, onClose }) {
   const [showOutdatedpassword, setShowOutdatedpassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showRepeatNewPassword, setShowRepeatNewPassword] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const dispatch = useDispatch();
 
   const initialValues = {
-    gender: userData?.gender || 'woman',
-    name: userData?.name || 'User',
-    email: userData?.email || '',
+    gender: user?.gender || 'woman',
+    name: user?.name || '',
+    email: user?.email || '',
     outdatedPassword: '',
     newPassword: '',
     repeatNewPassword: '',
@@ -73,37 +77,38 @@ export default function UserSettingsForm({ userData, onClose }) {
     }
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleUpdate = async (values, { setSubmitting }) => {
     // console.log('Form values:', values);
-    try {
-      const response = await fetch('http://localhost:3000/update-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
+    const { gender, name, email, outdatedPassword, newPassword } = values;
 
-      if (response.ok) {
-        alert('Profile updated successfully!');
-        onClose(); // Закрываем модалку после успешного обновления
-      } else {
-        const errorData = await response.json();
-        alert(`Error: ${errorData.message}`);
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Error updating profile.');
-    } finally {
-      setSubmitting(false);
-    }
+    dispatch(
+      updateUser({
+        photo: selectedFile,
+        gender,
+        name,
+        email,
+        outdatedPassword,
+        newPassword,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        toast.success('Profile updated successfully!');
+        onClose();
+      })
+      .catch(() => {
+        toast.error('Error updating profile.');
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
 
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={handleUpdate}
     >
       {({ isSubmitting }) => (
         <Form>
@@ -128,7 +133,7 @@ export default function UserSettingsForm({ userData, onClose }) {
               //   />
             )}
             {/* <img
-              src={userData?.photo || 'placeholder.jpg'}
+              src={user?.photo || 'placeholder.jpg'}
               alt="User Photo"
               style={{ width: '100px', height: '100px', objectFit: 'cover' }}
             /> */}
@@ -155,10 +160,6 @@ export default function UserSettingsForm({ userData, onClose }) {
               <Field type="radio" name="gender" value="man" />
               Man
             </label>
-            {/* <label>
-              <Field type="radio" name="gender" value="other" />
-              Other
-            </label> */}
           </div>
 
           <h3>Your name</h3>
@@ -190,7 +191,7 @@ export default function UserSettingsForm({ userData, onClose }) {
               </button>
             </label>
             <ErrorMessage
-              name="outdatedpassword"
+              name="outdatedPassword"
               component="div"
               className="error"
             />
@@ -248,3 +249,54 @@ export default function UserSettingsForm({ userData, onClose }) {
     </Formik>
   );
 }
+
+// try {
+//   const response = await fetch('http://localhost:3000/update-user', {
+//     method: 'PATCH',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(values),
+//   });
+
+//   if (response.ok) {
+//     alert('Profile updated successfully!');
+//     onClose(); // Закрываем модалку после успешного обновления
+//   } else {
+//     const errorData = await response.json();
+//     alert(`Error: ${errorData.message}`);
+//   }
+// } catch (error) {
+//   console.error('Error updating profile:', error);
+//   alert('Error updating profile.');
+// } finally {
+//   setSubmitting(false);
+// }
+
+// {
+/* <label>
+              <Field type="radio" name="gender" value="other" />
+              Other
+            </label> */
+// }
+
+// .test(
+//   'at-least-one-field',
+//   'At least one field must be filled out',
+//   function (value = {}) {
+//     const {
+//       name,
+//       email,
+//       outdatedPassword,
+//       newPassword,
+//       repeatNewPassword,
+//     } = value;
+//     return (
+//       !!name ||
+//       !!email ||
+//       !!outdatedPassword ||
+//       !!newPassword ||
+//       !!repeatNewPassword
+//     );
+//   }
+// ),

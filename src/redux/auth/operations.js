@@ -89,3 +89,23 @@ export const refreshUser = createAsyncThunk(
     }
   }
 );
+
+// кусок для проекта обновление данных юзера
+//PATCH @ /users/:userId
+export const updateUser = createAsyncThunk(
+  'users/updateUser',
+  async ({ id, photo, gender, name, email, password }, thunkAPI) => {
+    try {
+      const response = await axios.patch(`/user/${id}`, {
+        photo,
+        gender,
+        name,
+        email,
+        password,
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);

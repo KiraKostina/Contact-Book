@@ -20,9 +20,7 @@ export default function UserLogOutModal({ isOpen, onClose }) {
       contentLabel="LogOut Modal"
     >
       <div className={css.logout_modal_main_container}>
-        {/* <div className={css.logout_modal_wrapper}> */}
         <h2 className={css.log_out_title}>Log out</h2>
-        {/* </div> */}
         <h3 className={css.logout_confirm}> Do you really want to leave?</h3>
 
         <div className={css.button_container}>
@@ -36,6 +34,23 @@ export default function UserLogOutModal({ isOpen, onClose }) {
         </div>
       </div>
     </Modal>
-    // </div>
   );
 }
+
+// в auth - operations.js
+
+// export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
+//   try {
+//     await axios.post('/users/logout');
+//     clearAuthHeader();
+//   } catch (error) {
+//     return thunkAPI.rejectWithValue(error.message);
+//   }
+// });
+
+// в extraReducers: builder => {
+// builder.addCase(logOut.fulfilled, state => {
+//   state.user = { name: null, email: null };
+//   state.token = null;
+//   state.isLoggedIn = false;
+// });
