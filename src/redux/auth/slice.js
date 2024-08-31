@@ -56,18 +56,23 @@ const authSlice = createSlice({
       .addCase(refreshUser.rejected, state => {
         state.isRefreshing = false;
       })
-      .addCase(updateUser.pending, handlePending)
+      .addCase(updateUser.pending, state => {
+        state.isLoading = true; // handlePending
+      })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.user = action.payload;
+        // state.user = { ...state.user, ...payload };
       })
-      .addCase(updateUser.rejected, handleRejected)
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload; //handleRejected
+      })
       .addCase(uploadUserPhoto.pending, state => {
         state.loading = true;
         state.error = null;
       })
       .addCase(uploadUserPhoto.fulfilled, (state, action) => {
         state.loading = false;
-        // Если в ответе есть URL новой фотографии, обновляем его
         state.user.photo = action.payload.photo;
       })
       .addCase(uploadUserPhoto.rejected, (state, action) => {

@@ -2,6 +2,9 @@ import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 axios.defaults.baseURL = 'https://connections-api.goit.global/';
+// axios.defaults.baseURL = 'https://binary-shift-backend.onrender.com';
+// axios.defaults.baseURL = 'http://localhost:8080/';
+// axios.defaults.baseURL = 'https://666018415425580055b224e4.mockapi.io/';
 
 // Utility to add JWT
 const setAuthHeader = token => {
@@ -21,8 +24,12 @@ export const register = createAsyncThunk(
   'auth/register',
   async (newUser, thunkAPI) => {
     try {
-      const response = await axios.post('/users/signup', newUser);
-      // After successful registration, add the token to the HTTP header
+      const response = await axios.post(
+        '/users/signup',
+
+        newUser
+      );
+      //       // After successful registration, add the token to the HTTP header
       setAuthHeader(response.data.token);
       return response.data;
     } catch (error) {
@@ -108,6 +115,7 @@ export const updateUser = createAsyncThunk(
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -122,9 +130,10 @@ export const uploadUserPhoto = createAsyncThunk(
   'user/uploadPhoto',
   async (formData, thunkAPI) => {
     try {
-      const response = await axios.post('/user/avatar', formData, {
+      const response = await axios.patch('/user/avatar', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
         },
       });
 
