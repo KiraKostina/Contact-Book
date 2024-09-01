@@ -126,21 +126,19 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-export const uploadUserPhoto = createAsyncThunk(
+export const uploadPhoto = createAsyncThunk(
   'user/uploadPhoto',
   async (formData, thunkAPI) => {
     try {
       const response = await axios.patch('/user/avatar', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         },
       });
 
-      toast.success('Photo uploaded successfully!');
       return response.data;
     } catch (error) {
-      toast.error('Error uploading photo.');
       return thunkAPI.rejectWithValue(error.response.data || error.message);
     }
   }

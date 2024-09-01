@@ -5,7 +5,7 @@ import {
   logOut,
   refreshUser,
   updateUser,
-  uploadUserPhoto,
+  uploadPhoto,
 } from './operations';
 
 const handlePending = state => {
@@ -60,22 +60,22 @@ const authSlice = createSlice({
         state.isLoading = true; // handlePending
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.user = action.payload;
-        // state.user = { ...state.user, ...payload };
+        // state.user = action.payload;
+        state.user = { ...state.user, ...payload };
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload; //handleRejected
       })
-      .addCase(uploadUserPhoto.pending, state => {
+      .addCase(uploadPhoto.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(uploadUserPhoto.fulfilled, (state, action) => {
+      .addCase(uploadPhoto.fulfilled, (state, action) => {
         state.loading = false;
-        state.user.photo = action.payload.photo;
+        state.user.avatar = action.payload;
       })
-      .addCase(uploadUserPhoto.rejected, (state, action) => {
+      .addCase(uploadPhoto.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

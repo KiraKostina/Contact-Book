@@ -5,7 +5,7 @@ import { HiArrowUpTray } from 'react-icons/hi2';
 import { HiOutlineUserCircle } from 'react-icons/hi';
 import { HiOutlineEye } from 'react-icons/hi2';
 import { HiOutlineEyeOff } from 'react-icons/hi';
-import { updateUser, uploadUserPhoto } from '../../redux/auth/operations';
+import { updateUser, uploadPhoto } from '../../redux/auth/operations';
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 
@@ -57,7 +57,7 @@ export default function UserSettingsForm({ user, onClose }) {
     const formData = new FormData();
     formData.append('photo', file);
 
-    dispatch(uploadUserPhoto(formData))
+    dispatch(uploadPhoto(formData))
       .unwrap()
       .then(() => {
         toast.success('Photo uploaded successfully!');
