@@ -161,7 +161,7 @@ img {
 } */
 .user_form_input_button {
   position: absolute;
-  top: 50%; /* Центровка кнопки по вертикали */
+  top: 60%; /* Центровка кнопки по вертикали */
   right: 10px; /* Расположение кнопки справа внутри инпута */
   transform: translateY(-50%);
   background: none;
