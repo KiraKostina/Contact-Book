@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-axios.defaults.baseURL = 'https://connections-api.goit.global/';
+axios.defaults.baseURL = 'https://connections-api.goit.global';
 // axios.defaults.baseURL = 'https://binary-shift-backend.onrender.com';
 // axios.defaults.baseURL = 'http://localhost:8080/';
 // axios.defaults.baseURL = 'https://666018415425580055b224e4.mockapi.io/';
@@ -101,7 +101,10 @@ export const refreshUser = createAsyncThunk(
 //PATCH @ /users/:userId
 export const updateUser = createAsyncThunk(
   'user/updateUser',
-  async ({ id, photo, gender, name, email, password }, thunkAPI) => {
+  async (
+    { id, photo, gender, name, email, outdatedPassword, newPassword },
+    thunkAPI
+  ) => {
     try {
       const response = await axios.patch(
         `/user/${id}`,
@@ -110,12 +113,13 @@ export const updateUser = createAsyncThunk(
           gender,
           name,
           email,
-          password,
+          outdatedPassword,
+          newPassword,
         },
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,
           },
         }
       );
