@@ -25,6 +25,7 @@ const validationSchema = Yup.object({
   ),
   // .required('Please confirm your new password'),
 });
+//  добавить проверку, чтобы хотя бы одно поле было заполнено перед сабмитом
 
 export default function UserSettingsForm({ user, onClose }) {
   const [showOutdatedpassword, setShowOutdatedpassword] = useState(false);
@@ -184,6 +185,7 @@ export default function UserSettingsForm({ user, onClose }) {
               </label>
               <Field
                 className={css.user_info_input}
+                // className={css.user_info_field}
                 type="text"
                 name="name"
                 id={`${fieldId}-name`}
@@ -208,7 +210,7 @@ export default function UserSettingsForm({ user, onClose }) {
 
             <div className={css.passwordPart}>
               <p className={css.passwordTitle}>Password</p>
-              <div>
+              <div className={css.password_label_wrapper}>
                 <label htmlFor={`${fieldId}-outdatedPassword`}>
                   Outdated password:
                   <div className={css.password_form_input_wrapper}>
