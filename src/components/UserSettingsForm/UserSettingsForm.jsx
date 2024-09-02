@@ -78,6 +78,12 @@ export default function UserSettingsForm({ user, onClose }) {
     console.log('Form values:', values);
     const { gender, name, email, outdatedPassword, newPassword } = values;
 
+    if (!name && !email && !outdatedPassword && !newPassword) {
+      toast.error('Please fill in at least one field.');
+      setSubmitting(false);
+      return;
+    }
+
     dispatch(
       updateUser({
         photo: selectedFile,
