@@ -221,3 +221,22 @@ img {
     margin-right: 0px;
   }
 }
+
+@media screen and (min-width: 1440px) {
+  .user_info_block_desktop {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 24px;
+    /* margin-bottom: 24px; */
+  }
+
+  .gender_name_email_desktop {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .genderPart {
+    margin-bottom: 52px;
+  }
+}
