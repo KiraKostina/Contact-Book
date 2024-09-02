@@ -114,6 +114,7 @@ export default function UserSettingsForm({ user, onClose }) {
       >
         {({ isSubmitting }) => (
           <Form>
+            <h2 className={css.setting_title}>Setting</h2>
             <h3 className={css.photoTitle}>Your photo</h3>
             <div className={css.uploadPhotoWrapper}>
               <div className={css.photoUrlWrapper}>
